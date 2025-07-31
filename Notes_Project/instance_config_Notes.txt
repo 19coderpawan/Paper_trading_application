@@ -1,0 +1,12 @@
+🗂 What is instance/config.py?
+The config.py file in the instance/ folder is responsible for:
+-->Loading the .env file using load_dotenv()
+-->Making the values available to the Flask app config via a Config class
+
+How does the config class is  used in your main app?
+In your app.py, you write:
+
+from instance.config import Config
+...
+app.config.from_object(Config)
+➡ This tells Flask: “Hey, load all your settings from the Config class we defined.”

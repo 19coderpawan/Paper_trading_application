@@ -1,0 +1,7 @@
+🧾 What is .env file?
+The .env file is used to store sensitive configuration values such as:
+-->Secret keys
+-->API keys
+-->Database URIs
+-->Email credentials
+-->Anything you don't want exposed in code or GitHub
