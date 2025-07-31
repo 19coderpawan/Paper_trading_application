@@ -1,0 +1,29 @@
+So what is the role of the outer config.py (the one outside the instance/ folder)?
+-->This config.py typically holds your general configuration classes (like for dev, prod, test), 
+    while the one inside instance/ contains secret or environment-specific values.
+
+paper_trading_app/
+│
+├── app.py
+├── config.py              👈 Outer config file (general config)
+├── instance/
+│   └── config.py          👈 Inner config (secrets from .env)
+
+Example of Outer config.py
+# config.py
+
+class BaseConfig:
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    DEBUG = False
+
+class DevelopmentConfig(BaseConfig):
+    DEBUG = True
+
+class ProductionConfig(BaseConfig):
+    DEBUG = False
+
+Here’s what each class does:
+->BaseConfig: Shared settings
+->DevelopmentConfig: Enables debug mode for local development
+->ProductionConfig: Disables debug mode for safety
+

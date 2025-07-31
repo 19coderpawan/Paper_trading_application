@@ -1,0 +1,86 @@
+from flask import Flask
+✅ What it does:
+Imports the core Flask class from the Flask library.
+You'll use this to create your Flask app instance.
+
+
+from flask_sqlalchemy import SQLAlchemy
+✅ What it does:
+Imports SQLAlchemy, the Flask extension that integrates SQLAlchemy ORM with Flask.
+
+
+from instance.config import Config
+✅ What it does:
+Imports the Config class from instance/config.py.
+This class (as discussed earlier) loads sensitive config like SECRET_KEY, database URI, etc. — usually using .env.
+
+db = SQLAlchemy()
+✅ What it does:
+Creates a SQLAlchemy object — not tied to any app yet.
+
+
+def create_app():
+✅ What it does:
+Defines a function that creates and configures your Flask app.
+This is useful for separating app creation and configuration, especially for testing, modularity, or multiple environments.
+
+
+    app = Flask(__name__)
+✅ What it does:
+Creates the actual Flask application instance.
+__name__ helps Flask locate your templates and static files.
+
+    app.config.from_object(Config)
+✅ What it does:
+Loads configuration from the imported Config class (from instance/config.py).
+
+This sets values like:
+SECRET_KEY
+SQLALCHEMY_DATABASE_URI
+
+
+    db.init_app(app)
+✅ What it does:
+Initializes the SQLAlchemy extension with your Flask app.
+
+This binds the earlier db = SQLAlchemy() object to the app.
+
+
+    from models import User, Trade
+✅ What it does:
+Imports your models after db is initialized.
+This ensures that models use the correct db context.
+
+
+    with app.app_context():
+        db.create_all()
+✅ What it does:
+Creates the tables in your database only if they don’t exist already.
+app.app_context() sets the current app context (needed when working outside a route).
+db.create_all() creates the schema from the models.
+
+
+    from routes import main
+✅ What it does:
+Imports the main Blueprint from routes.py or routes/__init__.py.
+
+Using Blueprints is a good practice for organizing routes cleanly, especially in larger apps.
+
+    app.register_blueprint(main)
+✅ What it does:
+Registers the main blueprint so that the routes defined in it are available to the app.
+
+
+    return app
+✅ What it does:
+Returns the fully created and configured Flask app.
+
+ Summary of What Happens
+When create_app() is called:
+->A Flask app is created.
+->Config is loaded (including from .env).
+->Database is initialized.
+->Tables (User, Trade) are created if missing.
+->Routes are registered using a blueprint.
+->Final app is returned.
+->This pattern is powerful and used by production-ready Flask apps.
