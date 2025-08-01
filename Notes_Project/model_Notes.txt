@@ -22,3 +22,36 @@ Usage:
 from werkzeug.security import check_password_hash
 
 check_password_hash(hash, "mysecretpassword")  # Returns True or False
+
+
+//werkzeug.security hashes the password using a strong algorithm that:
+->Cannot be easily reversed
+->Adds a random salt automatically
+->Is safe against brute-force attacks
+
+
+
+🔐 Password Handling Methods
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+->This helper method takes a plain text password and:
+->Uses generate_password_hash() to securely hash it.
+->Saves it to the password_hash field.
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
+->This method checks whether a given password is correct.
+->Takes user input (password) and compares it to the stored hash
+
+ Example Usage:
+
+# Creating a user
+user = User(username='pawan', email='pawan@example.com')
+user.set_password('mysecretpassword')
+db.session.add(user)
+db.session.commit()
+
+# Checking password
+user.check_password('wrongpass')  # ❌ False
+user.check_password('mysecretpassword')  # ✅ True
