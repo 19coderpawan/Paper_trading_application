@@ -1,0 +1,24 @@
+The werkzeug.security module is a built-in security utility provided by Werkzeug, which is a core dependency of Flask.
+🔐 What is werkzeug.security?
+It is a submodule of Werkzeug, and it provides simple and secure functions for:
+->Hashing passwords
+->Verifying hashed passwords
+These are essential for any Flask application that handles user authentication.
+
+1. generate_password_hash(password)
+Purpose: Securely hashes a plain-text password.
+
+Usage:
+
+from werkzeug.security import generate_password_hash
+
+hash = generate_password_hash("mysecretpassword")
+Behind the scenes: It uses PBKDF2, a strong hashing algorithm, with a salt and multiple iterations.
+
+2. check_password_hash(hash, password)
+Purpose: Verifies whether the entered password matches the stored hash.
+
+Usage:
+from werkzeug.security import check_password_hash
+
+check_password_hash(hash, "mysecretpassword")  # Returns True or False
