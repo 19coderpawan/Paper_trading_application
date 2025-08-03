@@ -2,3 +2,5 @@ flask
 flask_sqlalchemy
 flask_login
 python-dotenv
+flask_wtf
+wtforms
