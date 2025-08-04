@@ -2,6 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField,SubmitField,PasswordField
 from wtforms.validators import DataRequired ,EqualTo,Email
 
+
 class Registeration(FlaskForm):
     username=StringField("UserName",validators=[DataRequired()])
     email=StringField("Email",validators=[DataRequired(),Email()])

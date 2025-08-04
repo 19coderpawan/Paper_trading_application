@@ -13,7 +13,9 @@ def create_app():
     with app.app_context():
         db.create_all()
     
-    from routes import main
+    from routes.home_route import main
     app.register_blueprint(main)
+    from routes.auth_route import auth_main
+    app.register_blueprint(auth_main)
 
     return app

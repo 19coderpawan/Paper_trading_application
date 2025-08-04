@@ -6,14 +6,6 @@ main=Blueprint('main',__name__)
 def home():
     pass
 
-@main.route('/register')
-def register():
-    pass
-
-@main.route('/login')
-def login():
-    pass
-
 @main.route('/dashboard')
 def dashboard():
     pass
