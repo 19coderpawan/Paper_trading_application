@@ -4,7 +4,7 @@ main=Blueprint('main',__name__)
 
 @main.route('/')
 def home():
-    pass
+    return render_template('home.html')
 
 @main.route('/dashboard')
 def dashboard():
