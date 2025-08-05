@@ -1,0 +1,27 @@
+****from flask import Blueprint, render_template, redirect, url_for, flash****
+
+Blueprint: Allows you to organize routes into components. Here, all authentication routes are grouped under auth.
+render_template: Renders HTML templates (like login.html, register.html).
+redirect: Redirects the user to a new route after an action.
+url_for: Dynamically builds the URL for a route by its function name.
+flash: Displays one-time messages to the user (e.g., "Logged in successfully").
+
+🧠 What flash() actually does:
+It adds a message to the session (temporarily).
+You can then access and display it in your template using get_flashed_messages().
+The first argument is the message to be flashed, and the second argument ('success') is the category of the message.
+
+🔍 What is a flash category?
+The category helps you style or filter messages in your HTML templates.
+Common categories include:
+'success' ✅ — for green success messages
+'error' ❌ — for red error messages
+'warning' ⚠️ — for yellow warning messages
+'info' ℹ️ — for blue or neutral messages
+
+
+
+***from flask_login import login_user, logout_user, login_required***
+login_user(user): Logs in the given user.
+logout_user(): Logs the current user out.
+login_required: Decorator to protect routes — only accessible if user is logged in.
