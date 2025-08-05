@@ -30,3 +30,12 @@ def login():
         flash("Invalid credentials ",'danger')   
             
     return render_template('login.html',form=form)
+
+@auth_route.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash("LogOut successfully",'success')
+    redirect(url_for('auth_route.login'))
+
+

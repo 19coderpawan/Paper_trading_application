@@ -25,3 +25,29 @@ Common categories include:
 login_user(user): Logs in the given user.
 logout_user(): Logs the current user out.
 login_required: Decorator to protect routes — only accessible if user is logged in.
+
+****if form.validate_on_submit():
+        user=User.query.filter_by(email=form.email.data).first()
+        if user and check_password_hash(user.password,form.password.data):
+            login_user(user) #Logs the user in (creates a session using Flask-Login).
+            flash("Successfully logedin!",'success')
+            return redirect(url_for('home_route.dashboard'))
+        flash("Invalid credentials ",'danger')   
+            
+    return render_template('login.html',form=form)*****
+
+explanation-: 
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+->Find the user by the email entered in the form.
+        if user and check_password_hash(user.password, form.password.data):
+->If user exists and password matches after hashing:
+            login_user(user)
+->Logs the user in (creates a session using Flask-Login).
+            flash('Logged in successfully.', 'success')
+            return redirect(url_for('home.dashboard'))
+->Redirects to the dashboard route defined in your home blueprint.
+        flash('Login failed.', 'danger')
+->If login fails, show an error message.
+    return render_template('login.html', form=form)
+->Renders login form on GET or failed validation.    
