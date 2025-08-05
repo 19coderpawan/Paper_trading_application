@@ -10,7 +10,7 @@ def create_app():
 
     from models import User    
     with app.app_context():
-        print("🧪 SQLAlchemy tables:", db.metadata.tables.keys())  # debug pri
+        # print("🧪 SQLAlchemy tables:", db.metadata.tables.keys())  # debug pri
         db.create_all()
     
     from routes.home_route import main

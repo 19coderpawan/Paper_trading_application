@@ -6,10 +6,10 @@
     <body>
         <h1>LOGIN To get Started.</h1>
         <form method="POST">
-            {form.hidden_tag()}
-            {form.email.label} --- {form.email()}
-            {form.password.label} --- {form.password()}
-            {form.submit()}
+            {{form.hidden_tag()}}
+            {{form.email.label}} --- {{form.email()}}
+            {{form.password.label}} --- {{form.password()}}
+            {{form.submit()}}
         </form>
     </body>
 </html>
