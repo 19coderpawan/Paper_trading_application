@@ -51,3 +51,59 @@ explanation-:
 ->If login fails, show an error message.
     return render_template('login.html', form=form)
 ->Renders login form on GET or failed validation.    
+
+
+
+✅ What is Flask-Login?
+Flask-Login is a Flask extension that handles user session management — i.e., logging users in and out, 
+remembering them across requests, and protecting views that require authentication.
+
+🔐 login_user(user)
+▶️ What it does:
+Logs in a user and creates a session.
+Sets a secure session cookie so the user stays logged in across pages.
+Works with your User model if it inherits from UserMixin (required).
+✅ Requirements:
+Your User model must implement these properties (inherited from UserMixin):
+is_authenticated
+is_active
+is_anonymous
+get_id() — returns a unique ID (usually id)
+
+🚪 logout_user()
+▶️ What it does:
+Ends the user’s session.
+Clears the session cookie.
+The user becomes unauthenticated (current_user.is_authenticated becomes False).
+
+🧠 Bonus: @login_required
+Use this decorator to protect routes from unauthorized access.
+from flask_login import login_required
+@app.route('/dashboard')
+@login_required
+def dashboard():
+    return "Welcome, you are logged in!"
+If a user tries to access this without logging in, they are redirected to the login page.
+
+
+
+🔐 What is a Session in Flask?
+A session is a way to store information about a user across multiple requests — like whether they’re logged in or not.
+In technical terms:
+A session is a temporary, secure storage mechanism that allows Flask to remember data (like user ID or preferences) 
+between HTTP requests.
+Flask stores session data on the client side, using a secure cookie.
+
+🧠 Where does session come in?
+When you call:
+✅ login_user(user)
+This logs in the user by:
+Storing the user's ID in the Flask session cookie.
+Creating a user session that lasts until the user logs out or the browser is closed (unless configured otherwise).
+From now on, current_user will return this logged-in user.
+
+✅ logout_user()
+This logs out the user by:
+Clearing the session data (i.e., removing the stored user ID).
+Making current_user anonymous again.
+Essentially ends the "user session".
