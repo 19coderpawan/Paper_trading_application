@@ -1,5 +1,5 @@
 from flask import Blueprint,render_template,redirect,url_for,flash,request
-from forms import Login,Registeration
+from forms import Login,Registration
 from app import db
 from models import User
 from flask_login import login_user,logout_user,login_required
@@ -8,14 +8,18 @@ auth_route=Blueprint('auth_route',__name__)
 
 @auth_route.route('/register',methods=['GET','POST'])
 def register():
-    form=Registeration()
+    form=Registration()
     if form.validate_on_submit():
+        print(form.password.data)
         password=generate_password_hash(form.password.data)
-        data=User(name=form.name.data,email=form.email.data,hash_password=password)
+        data=User(name=form.username.data,email=form.email.data,hash_password=password)
         db.session.add(data)
         db.session.commit()
         flash("Register sucessfully",'success')
-        redirect(url_for('auth_route.login'))
+        return redirect(url_for('auth_route.register'))
+    else:
+        if request.method == 'POST':
+            print(form.errors)  # 👈 Show what's wrong with input
     return render_template('register.html',form=form)
 
 @auth_route.route('/login',methods=['GET','POST'])
