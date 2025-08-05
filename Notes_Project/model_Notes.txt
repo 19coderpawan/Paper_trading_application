@@ -56,3 +56,28 @@ db.session.commit()
 # Checking password
 user.check_password('wrongpass')  # ❌ False
 user.check_password('mysecretpassword')  # ✅ True
+
+
+
+🧠 What is UserMixin?
+UserMixin is a helper class from Flask-Login that automatically adds required methods to your User model so 
+Flask-Login can work properly.
+
+It adds methods like:
+is_authenticated → Returns True if the user is authenticated
+is_active → Returns True if the user is active
+is_anonymous → Returns False for real users
+get_id() → Returns the user’s ID (as a string)
+
+🔍 Why you don’t call these methods yourself
+You don’t call these methods directly in your code, but Flask-Login does!
+For example:
+from flask_login import login_user
+login_user(user)
+Behind the scenes, Flask-Login will internally use:
+user.is_authenticated
+user.get_id()
+etc.
+
+You don’t have to define or call those yourself — UserMixin provides them so Flask-Login can recognize your 
+model as a valid "user".
