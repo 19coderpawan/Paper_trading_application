@@ -16,7 +16,7 @@ def register():
         db.session.add(data)
         db.session.commit()
         flash("Register sucessfully",'success')
-        return redirect(url_for('auth_route.register'))
+        return redirect(url_for('auth_route.login'))
     else:
         if request.method == 'POST':
             print(form.errors)  # 👈 Show what's wrong with input
@@ -27,7 +27,7 @@ def login():
     form=Login()
     if form.validate_on_submit():
         user=User.query.filter_by(email=form.email.data).first()
-        if user and check_password_hash(user.password,form.password.data):
+        if user and check_password_hash(user.hash_password,form.password.data):
             login_user(user) #Logs the user in (creates a session using Flask-Login).
             flash("Successfully logedin!",'success')
             return redirect(url_for('home_route.dashboard'))

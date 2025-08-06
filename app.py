@@ -1,17 +1,25 @@
 from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
 from instance.config import Config
 from extension import db
+from flask_login import LoginManager
 
+login_manager=LoginManager()
 def create_app():
     app=Flask(__name__)
     app.config.from_object(Config)
     db.init_app(app)
+    login_manager.init_app(app)
+    login_manager.login_view = 'auth_route.login'  # 👈 Redirects to login page if @login_required fails
+    login_manager.login_message_category = 'info'  # 👈 Flash category for login message
 
     from models import User    
-    with app.app_context():
-        # print("🧪 SQLAlchemy tables:", db.metadata.tables.keys())  # debug pri
-        db.create_all()
+    # with app.app_context():
+    #     # print("🧪 SQLAlchemy tables:", db.metadata.tables.keys())  # debug pri
+    #     db.create_all()
+
+    @login_manager.user_loader
+    def load_user(user_id):
+        User.query.get(int(user_id))
     
     from routes.home_route import main
     app.register_blueprint(main)
