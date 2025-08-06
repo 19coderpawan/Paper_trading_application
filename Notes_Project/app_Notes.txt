@@ -111,3 +111,39 @@ A Blueprint in Flask is like a template for a group of routes, forms, or logic t
 When you register_blueprint(), you are telling Flask:
 ->“Hey, I have this set of routes and logic defined in a blueprint — please attach it to the main app so it 
    actually works.”
+
+
+
+*****LoginManager: From Flask-Login, used to manage user sessions (logins, logouts, etc.).*****  
+🧠 What is Flask-Login and LoginManager?
+Flask-Login helps you manage user authentication and session handling in your app:
+Keeps track of logged-in users.
+Redirects users to the login page if they try to access protected routes.
+Remembers the user session across requests.
+LoginManager is the main controller for Flask-Login — you configure it with your app and define how it should behave. 
+
+🔐 LoginManager configuration
+
+    login_manager.login_view = 'auth.login'
+    login_manager.login_message_category = 'info'
+
+login_view = 'auth.login':
+This tells Flask-Login which view (route) to redirect unauthenticated users to
+auth.login means: login() function in the auth blueprint.
+
+login_message_category = 'info':
+If user is redirected, a message like “Please log in to access this page” is flashed.
+This sets the flash category (info, success, danger, etc.) for styling in templates
+
+
+👤 Load user function
+
+    from models import User
+    @login_manager.user_loader
+    def load_user(user_id):
+        return User.query.get(int(user_id))
+This is essential for Flask-Login to work.
+When a user logs in, Flask-Login stores their user_id in the session.
+On each request, Flask-Login calls this load_user() function with the user_id.
+Your function queries the database to retrieve the full User object.
+This object becomes current_user in your templates and views.
