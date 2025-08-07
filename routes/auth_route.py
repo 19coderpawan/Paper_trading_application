@@ -40,6 +40,6 @@ def login():
 def logout():
     logout_user()
     flash("LogOut successfully",'success')
-    redirect(url_for('auth_route.login'))
+    return redirect(url_for('auth_route.login'))
 
 

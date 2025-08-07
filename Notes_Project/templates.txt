@@ -15,6 +15,9 @@ A link to the homepage route, named home.homepage (likely defined in homeroutes.
 Checks if the user is logged in (current_user is provided by Flask-Login).
                                                                                 ****
 
+note-:<p>Logged in as: {{ current_user.email if current_user.is_authenticated else "Not logged in" }}</p> to Checks
+if user is logedin.
+
 
 {% with messages = get_flashed_messages(with_categories=true) %}
 Flask has a flash() system to show temporary notifications (like “Login successful”).
