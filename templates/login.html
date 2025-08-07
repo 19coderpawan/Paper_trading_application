@@ -1,9 +1,6 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Login page</title>
-    </head>
-    <body>
+{% extends 'base.html' %}
+{% block title %}Login Page{% endblock %}
+    {% block content %}
         <h1>LOGIN To get Started.</h1>
         <form method="POST">
             {{form.hidden_tag()}}
@@ -11,5 +8,4 @@
             {{form.password.label}} --- {{form.password()}}
             {{form.submit()}}
         </form>
-    </body>
-</html>
+    {% endblock %}

@@ -1,10 +1,6 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Registration page</title>
-    </head>
-    <body>
-        <h1>Regerster here-:</h1>
+{% extends 'base.html' %}
+{% block title %}Registration page{% endblock  %}
+     {% block content %}
         <form method="POST">
             {{form.hidden_tag()}}
             {{form.username.label}} --- {{form.username()}}
@@ -13,5 +9,5 @@
             {{form.confirm_password.label}} --- {{form.confirm_password()}}
             {{form.submit()}}
         </form>
-    </body>
-</html>
+        {% endblock %}
+  
