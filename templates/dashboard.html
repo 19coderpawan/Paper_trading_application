@@ -4,7 +4,11 @@
 
 {% block content %}
  <div class="container">
-    <h2>Welcome, {{ current_user.name }}!</h2>
-    <p>This is your trading dashboard.</p>
+    <h2>Welcome, {{ current_user.name }}</h2>
+
+    <div class="profile-card">
+        <p><strong>Email:</strong> {{ current_user.email }}</p>
+        <p><strong>User ID:</strong> {{ current_user.id }}</p>
     </div>
+</div>
 {% endblock %}

@@ -2,6 +2,7 @@
 {% block title %}Registration page{% endblock  %}
      {% block content %}
      <div class="container">
+        <h1>ThankYou for choosing us!</h1>
         <form method="POST">
             {{form.hidden_tag()}}
             {{form.username.label}} --- {{form.username()}}
@@ -10,6 +11,13 @@
             {{form.confirm_password.label}} --- {{form.confirm_password()}}
             {{form.submit()}}
         </form>
+                    <dotlottie-wc
+  src="https://lottie.host/c80376d7-1474-4087-8e90-f756c973e366/rzFEkqaNXh.lottie"
+  style="width: 500px;height: 300px;"
+  speed="1"
+  autoplay
+  loop
+></dotlottie-wc>
         </div>
         {% endblock %}
   

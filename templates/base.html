@@ -3,6 +3,8 @@
     <head>
         <title>{% block title %}Paper Trading{% endblock %}</title>
          <link rel="stylesheet" href="{{ url_for('static', filename='Style.css') }}">
+         <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.6.2/dist/dotlottie-wc.js"
+  type="module"></script>
     </head>
     <body>
         <nav>
@@ -14,9 +16,15 @@
             <a href="{{url_for('auth_route.login')}}">Login</a>
             <a href="{{url_for('auth_route.register')}}">Register</a>
             {% endif %}
+            <label class="toggle-switch">
+    <input type="checkbox" id="darkModeToggle">
+    <span class="slider"></span>
+  </label>
+
         </nav>
         <p>Logged in as: {{ current_user.email if current_user.is_authenticated else "Not logged in" }}</p>
-
+        <!-- Dark Mode Toggle -->
+  
 
         {%with messages = get_flashed_messages(with_categories=true)%}
         {% if messages %}
@@ -37,5 +45,22 @@
                 flash.style.display = 'none';
             }
         }, 2000); // 👈 4000ms = 4 seconds
+        
+  const toggle = document.getElementById("darkModeToggle");
+  const body = document.body;
+
+  toggle.addEventListener("change", function () {
+    body.classList.toggle("dark-mode");
+
+    // Save preference
+    localStorage.setItem("darkMode", body.classList.contains("dark-mode"));
+  });
+
+  // Load saved preference
+  if (localStorage.getItem("darkMode") === "true") {
+    body.classList.add("dark-mode");
+    toggle.checked = true;
+  }
+
     </script>
 </html>
