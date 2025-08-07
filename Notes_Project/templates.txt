@@ -1,0 +1,32 @@
+***base.html is not rendered directly by any route.***
+It is a layout template used by other templates to extend and inherit the common structure (navigation bar, 
+flash messages, etc.).
+
+
+ ****<title>{% block title %}Paper Trading{% endblock %}</title>****
+Jinja2 block title: Allows child templates to override the title.
+Default title is “Paper Trading” if not overridden.
+
+****
+        <a href="{{ url_for('home.homepage') }}">Home</a>
+A link to the homepage route, named home.homepage (likely defined in homeroutes.py).
+
+        {% if current_user.is_authenticated %}
+Checks if the user is logged in (current_user is provided by Flask-Login).
+                                                                                ****
+
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+Flask has a flash() system to show temporary notifications (like “Login successful”).
+This line grabs all messages with their category (e.g., 'success', 'error', etc.).
+
+{% if messages %}
+            <ul>
+If any messages exist, start a list to display them.
+
+     {% for category, message in messages %}
+      <li class="flash {{ category }}">{{ message }}</li>
+For each message:
+Wrap it in a list item.
+Add a CSS class like .flash success or .flash error to style it differently.
+

@@ -86,3 +86,12 @@ flask --app app:create_app db downgrade -1  # go back 1 migration
 👀 To view migration history
 
 flask --app app:create_app db history
+
+
+🧪 Why it’s useful
+You can track DB schema changes over time
+Rollback migrations if something breaks
+Share migrations with teammates just like code commits
+Maintain consistency between development, staging, and production databases
+
+
