@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}Registration page{% endblock  %}
      {% block content %}
+     <div class="container">
         <form method="POST">
             {{form.hidden_tag()}}
             {{form.username.label}} --- {{form.username()}}
@@ -9,5 +10,6 @@
             {{form.confirm_password.label}} --- {{form.confirm_password()}}
             {{form.submit()}}
         </form>
+        </div>
         {% endblock %}
   
