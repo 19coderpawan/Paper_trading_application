@@ -1,14 +1,72 @@
 {% extends 'base.html' %}
 
-{% block title %}Dashboard{% endblock %}
-
 {% block content %}
- <div class="container">
-    <h2>Welcome, {{ current_user.name }}</h2>
+<!-- Trading Ticker -->
+<div class="trading-ticker">
+    <div class="ticker-wrap">
+        <div class="ticker">
+            <span>BTC/USD: $29,400 ▲ 1.25%</span>
+            <span>ETH/USD: $1,850 ▲ 0.85%</span>
+            <span>TSLA: $730 ▼ 0.40%</span>
+            <span>GOOGL: $2,820 ▲ 0.60%</span>
+            <span>AMZN: $3,450 ▲ 1.10%</span>
+            <span>EUR/USD: 1.0950 ▼ 0.12%</span>
+        </div>
+    </div>
+</div>
 
-    <div class="profile-card">
-        <p><strong>Email:</strong> {{ current_user.email }}</p>
-        <p><strong>User ID:</strong> {{ current_user.id }}</p>
+<div class="container mt-4 dashboard-container">
+    <h2 class="welcome-text">Welcome, {{ current_user.name }} 👋</h2>
+    
+    <!-- Summary Cards -->
+    <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="stat-card balance-card">
+                <h5>Balance</h5>
+                <p class="stat-value">${{ balance }}</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card invested-card">
+                <h5>Invested</h5>
+                <p class="stat-value">${{ total_invested }}</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card networth-card">
+                <h5>Net Worth</h5>
+                <p class="stat-value">${{ net_worth }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Transactions -->
+    <h4 class="mt-5 section-title">📜 Recent Transactions</h4>
+    <div class="table-responsive">
+        <table class="table table-hover table-striped transaction-table">
+            <thead class="table-dark">
+                <tr>
+                    <th>Date</th>
+                    <th>Asset</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Type</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for t in transactions %}
+                <tr>
+                    <td>{{ t.date }}</td>
+                    <td>{{ t.asset }}</td>
+                    <td>{{ t.quantity }}</td>
+                    <td>${{ t.price }}</td>
+                    <td class="{% if t.type == 'BUY' %}buy-type{% else %}sell-type{% endif %}">
+                        {{ t.type }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
 </div>
 {% endblock %}
