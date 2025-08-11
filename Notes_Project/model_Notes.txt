@@ -83,6 +83,22 @@ You don’t have to define or call those yourself — UserMixin provides them so
 model as a valid "user".
 
 
+# Relationships in User Model-:
+    portfolio = db.relationship('Portfolio', backref='owner', lazy=True)
+    transactions = db.relationship('Transaction', backref='owner', lazy=True)
+db.relationship(...) does not create DB columns. It creates Python attributes for convenient access to related rows.
+'Portfolio' and 'Transaction' are the target model names (strings so order doesn't matter).
+backref='owner' creates a complementary attribute on the child model (so a_portfolio.owner returns the User object).
+lazy=True controls loading strategy: with lazy=True (Flask-SQLAlchemy accepts this shorthand), SQLAlchemy will load related items on access with a separate SELECT (i.e., lazy-loading).
+(Other common values: 'select', 'joined', 'subquery', 'dynamic'.)
+
+After these relationships you can do:
+user.portfolio → list of Portfolio rows for that user.
+user.transactions → list of Transaction rows for that user.
+portfolio.owner → that portfolio’s User instance (thanks to backref).
+
+
+
 
 1️⃣ Portfolio Model
 Tracks the user’s holdings.
@@ -94,6 +110,44 @@ quantity → How many units the user owns
 avg_price → Average price at which they bought
 created_at / updated_at → Track changes
 
+
+Portfolio model-:
+
+class Portfolio(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+Table for holding holdings per user — id is the primary key.
+
+
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+user_id is a foreign key referencing user.id (the User table’s id column).
+The string 'user.id' uses default table naming (SQLAlchemy uses the lowercased class name 'user' 
+by default unless you set __tablename__).nullable=False means every portfolio row must be attached to a user.
+
+
+    symbol = db.Column(db.String(10), nullable=False)
+Symbol/ticker for the asset (e.g., 'AAPL', 'BTC') limited to 10 characters. Non-nullable.
+
+
+    quantity = db.Column(db.Float, nullable=False, default=0.0)
+How many units of the asset the user holds.
+Float datatype.
+default=0.0 means if no value is provided when inserting, DB/SQLAlchemy uses 0.0.
+
+    avg_price = db.Column(db.Float, nullable=False, default=0.0)
+Average price paid per unit (useful for calculating unrealized P/L). Non-nullable, default 0.0.
+
+    created_at = db.Column(db.DateTime, default=lambda:datetime.now(timezone.utc))
+When the row was created.
+
+    updated_at = db.Column(db.DateTime, default=lambda:datetime.now(timezone.utc), onupdate=lambda:datetime.now(timezone.utc))
+updated_at stores last modification time.
+default=datetime.now(timezone.utc) sets initial value.
+onupdate=lambda:datetime.now(timezone.utc) instructs SQLAlchemy to set this column to current UTC time automatically whenever the row is updated.
+
+
+
+
+
 2️⃣ Transaction Model
 Logs every buy/sell action so we can show history.
 Fields to include:
@@ -104,3 +158,34 @@ quantity → Number of units bought or sold
 price → Price per unit during transaction
 transaction_type → Either "BUY" or "SELL"
 timestamp → When the transaction happened
+
+
+Transaction model-:
+
+class Transaction(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+Primary key for transactions.
+
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+Foreign key linking the transaction to the User. Every transaction belongs to a user.
+
+
+    symbol = db.Column(db.String(10), nullable=False)
+The traded asset symbol.
+
+
+    quantity = db.Column(db.Float, nullable=False)
+Quantity bought/sold — non-nullable.
+
+
+    price = db.Column(db.Float, nullable=False)
+Trade price per unit (or total price depending on your design). Non-nullable.
+
+
+    transaction_type = db.Column(db.String(4), nullable=False)  # BUY or SELL
+Short code to indicate trade type. Length 4 is enough for 'BUY' or 'SELL'.
+
+Non-nullable. You might consider an Enum type to restrict allowed values ('BUY'/'SELL') if you want stricter validation at DB level.
+
+    timestamp = db.Column(db.DateTime, default=datetime.utcnow)
+When the transaction happened. Default is current UTC timestamp at insert.
