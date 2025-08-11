@@ -81,3 +81,26 @@ etc.
 
 You don’t have to define or call those yourself — UserMixin provides them so Flask-Login can recognize your 
 model as a valid "user".
+
+
+
+1️⃣ Portfolio Model
+Tracks the user’s holdings.
+Fields to include:
+id → Primary key
+user_id → Foreign key linking to the User table
+symbol → Stock/Crypto symbol (e.g., "AAPL", "BTC")
+quantity → How many units the user owns
+avg_price → Average price at which they bought
+created_at / updated_at → Track changes
+
+2️⃣ Transaction Model
+Logs every buy/sell action so we can show history.
+Fields to include:
+id → Primary key
+user_id → Foreign key linking to the User table
+symbol → Stock/Crypto symbol
+quantity → Number of units bought or sold
+price → Price per unit during transaction
+transaction_type → Either "BUY" or "SELL"
+timestamp → When the transaction happened
