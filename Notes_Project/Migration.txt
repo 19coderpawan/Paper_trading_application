@@ -12,6 +12,42 @@ Maintain a version history of your schema
 ✅ Helps in development: Easily test schema changes
 ✅ Helps in production: Apply updates without dropping tables or data loss
 
+3. Alembic is basically a version control system for your database schema — kind of like Git, but for your tables, 
+columns, indexes, and constraints.
+
+4.✅ Where Alembic can be used
+Frameworks: Flask, FastAPI, Pyramid, bare Python scripts, etc.
+Databases: SQLite, PostgreSQL, MySQL, MariaDB, Oracle, MS SQL Server, etc.
+ORM: Works with SQLAlchemy ORM or SQLAlchemy Core.
+
+SQLAlchemy is a Python-only ORM (Object Relational Mapper) and database toolkit.
+It’s designed specifically for Python, so you can’t directly use SQLAlchemy in Java, JavaScript, C#, or other languages.
+
+Here’s a quick breakdown:
+
+What SQLAlchemy does
+Lets you write Python classes to represent database tables (ORM).
+Lets you run SQL queries in Python without manually writing SQL strings (though you still can if you want).
+
+Works with many databases:
+SQLite
+MySQL / MariaDB
+PostgreSQL
+Oracle
+MS SQL Servee
+
+Has two parts:
+Core → Low-level SQL expression language (like building SQL queries programmatically).
+ORM → Maps Python classes ↔ database tables.
+
+Why it’s Python-only
+SQLAlchemy is built on top of Python’s DB-API 2.0 standard.
+It integrates tightly with Python syntax and data types.
+Other languages have their own ORMs (e.g., Hibernate for Java, Sequelize for JavaScript, Entity Framework for C#).
+
+💡 Alembic (which we discussed earlier) is a migration tool built specifically for SQLAlchemy, so it’s also 
+Python-only.
+
 '''Flask-Migrate is a python package that configures SQLAlchemy and Alembic for your Flask application. 
 Alembic is the migration tool that actually takes care of database migrations under the hood. 
 It can automatically generate migration files based on database schema models, and apply those migrations to 

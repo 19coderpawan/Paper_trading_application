@@ -8,7 +8,7 @@ class User(db.Model,UserMixin):
     email=db.Column(db.String(50),unique=True,nullable=False)
     hash_password=db.Column(db.String(100),nullable=False)
     balance=db.Column(db.Float(),default=10000.0)
-    print("models imported")
+    
     def set_password(self,password):
         self.hash_password=generate_password_hash(password)
 
