@@ -10,16 +10,20 @@ auth_route=Blueprint('auth_route',__name__)
 def register():
     form=Registration()
     if form.validate_on_submit():
-        print(form.password.data)
+        # Check if email already exists
+        existing_user = User.query.filter_by(email=form.email.data).first()
+        if existing_user:
+            flash("Email already registered. Please log in.", "warning")
+            return redirect(url_for('auth_route.login'))
         password=generate_password_hash(form.password.data)
         data=User(name=form.username.data,email=form.email.data,hash_password=password)
         db.session.add(data)
         db.session.commit()
         flash("Register sucessfully",'success')
         return redirect(url_for('auth_route.login'))
-    else:
-        if request.method == 'POST':
-            print(form.errors)  # 👈 Show what's wrong with input
+    # else:
+    #     if request.method == 'POST':
+    #         print(form.errors)  # 👈 Show what's wrong with input
     return render_template('register.html',form=form)
 
 @auth_route.route('/login',methods=['GET','POST'])
