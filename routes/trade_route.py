@@ -1,9 +1,10 @@
-from flask import Blueprint,redirect,render_template,url_for,request,flash
+from flask import Blueprint,redirect,render_template,url_for,request,flash,jsonify 
 from forms import Trade
 from app import db
 from models import Portfolio,Transaction
 from flask_login import login_required,current_user
 from datetime import datetime,timezone
+from utils.price_fetcher import get_prices
 
 trade_route=Blueprint('trade_route',__name__)
 
@@ -16,7 +17,13 @@ def trade():
         quantity=float(form.quantity.data)
         trade_type=form.trade_type.data
 
-        price=100 #temperory later wil fetch usin API.
+        # Auto-detect market type
+        price, market_type = get_prices(symbol)
+        if not price:
+            flash(f"Could not fetch price for {symbol}.", "danger")
+            return redirect(url_for('trade_route.trade'))
+
+        # price=100 #temperory later wil fetch usin API.
         total_cost=quantity*price
 
         # check for curr user portfolio
@@ -68,5 +75,16 @@ def trade():
         return redirect(url_for('home_route.dashboard'))
     
     return render_template('trade.html',form=form)
+
+
+# to make the price visible on the screen when user select any stock/crypto
+@trade_route.route("/get_price/<symbol>")
+@login_required
+def getprice(symbol):
+    # jsonify converts Python dictionaries/lists into JSON responses for the client.
+    price,market_type=get_prices(symbol)
+    if price:
+        return jsonify({"price": price, "market_type": market_type})
+    return jsonify({"error": f"Price not found for {symbol}"}), 404
 
 

@@ -4,10 +4,47 @@
 <div class="container">
 <form action="" method="POST">
     {{form.hidden_tag()}}
-    {{form.symbol.label}} --- {{form.symbol()}}
-    {{form.quantity.label}} --- {{form.quantity()}}
-    {{form.trade_type.label}} --- {{form.trade_type()}}
+    <div>
+        {{ form.symbol.label }}
+        {{ form.symbol(size=20, id="symbol-input") }}
+    </div>
+
+    <p id="price-display" style="font-weight:bold;"></p>
+    <div>
+        {{ form.quantity.label }}
+        {{ form.quantity(size=20) }}
+    </div>
+
+    <div>
+        {{ form.trade_type.label }}
+        {{ form.trade_type() }}
+    </div>
     {{form.submit()}}
 </form>
 </div>
+<script>
+document.getElementById("symbol-input").addEventListener("change", function() {
+    const symbol = this.value;
+   console.log(symbol)
+    const priceDisplay = document.getElementById("price-display");
+
+    if (symbol) {
+        fetch(`/get_price/${symbol}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data.price) {
+                    priceDisplay.textContent = `Live Price: $${data.price} (${data.market_type})`;
+                } else {
+                    priceDisplay.textContent = data.error || "Price not found.";
+                }
+            })
+            .catch(err => {
+                priceDisplay.textContent = "Error fetching price.";
+                console.error(err);
+            });
+    } else {
+        priceDisplay.textContent = "";
+    }
+});
+</script>
 {% endblock %}
