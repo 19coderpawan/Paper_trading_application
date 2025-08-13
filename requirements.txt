@@ -6,3 +6,5 @@ flask_wtf
 wtforms
 email-validator
 flask-migrate
+yfinance 
+requests

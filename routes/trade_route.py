@@ -5,14 +5,14 @@ from models import Portfolio,Transaction
 from flask_login import login_required,current_user
 from datetime import datetime,timezone
 
-trade_route=Blueprint('trade_route','__name__')
+trade_route=Blueprint('trade_route',__name__)
 
 @trade_route.route('/trade',methods=["GET","POST"])
 @login_required
 def trade():
     form=Trade()
     if form.validate_on_submit():
-        symbol=form.symbol.data
+        symbol=form.symbol.data.upper()
         quantity=float(form.quantity.data)
         trade_type=form.trade_type.data
 

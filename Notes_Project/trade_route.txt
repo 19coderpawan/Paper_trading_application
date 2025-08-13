@@ -1,0 +1,10 @@
+*** Create Trade Route***
+1.When user buys:
+Add transaction entry
+Update portfolio quantity (+)
+
+2.When user sells:
+Check they have enough quantity
+Subtract from portfolio quantity (-)
+If quantity hits zero, remove from portfolio
+

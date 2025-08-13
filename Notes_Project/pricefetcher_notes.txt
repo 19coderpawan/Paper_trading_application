@@ -1,0 +1,133 @@
+***Using pricefetcher.py file we are going to fetch the recent price of the specific Stocks/Crypto***
+
+
+"import yfinance as yf
+import requests"
+->Imports yfinance (unofficial Yahoo Finance wrapper) as yf.
+->Imports requests for HTTP calls (used for CoinGecko).
+
+
+"def get_stock_price(symbol: str) -> float:"
+->Defines a function that takes a ticker symbol (e.g., "AAPL") and returns a float price (or None).
+
+
+  '''try:
+        ticker = yf.Ticker(symbol)'''
+Creates a Ticker object for the given symbol.
+
+
+        '''data = ticker.history(period="1d")'''
+Fetches 1 day of historical OHLCV data as a pandas DataFrame.
+Note: For intra-day “live” quotes, history(period="1d") often gives the most recent close, not a constantly live price.
+
+
+        '''if not data.empty:
+            return float(data['Close'].iloc[-1])'''
+->If data exists, return the last row’s Close price as a float.
+iloc in Pandas stands for integer-location based indexing — basically, it’s how you grab rows/columns 
+by their position rather than their name. here -1 indicates the last row.
+
+
+
+
+''' except Exception as e:
+        print(f"Stock price fetch error for {symbol}: {e}")
+    return None'''
+->On any error (bad symbol, network issues), log it and fall back to None.
+
+
+******
+"def get_crypto_price(symbol: str) -> float:"
+    """Fetch latest crypto price from CoinGecko."""
+->Defines a function that takes a crypto id (CoinGecko style) and returns price in USD (float) or None.
+
+
+''' try:
+        # CoinGecko expects lowercase names like 'bitcoin', not 'BTC'
+        url = f"https://api.coingecko.com/api/v3/simple/price?ids={symbol.lower()}&vs_currencies=usd"'''
+->Builds the CoinGecko “simple price” URL.
+->Important: CoinGecko uses IDs (e.g., bitcoin, ethereum) not tickers like BTC.
+
+✅ The Api used Here, is global and public — you do not need your own API key for basic requests like this.
+Anyone can call it directly without authentication.
+
+How it works:
+ids= → expects the CoinGecko "id" of the asset (like "bitcoin", "ethereum", not "BTC" or "ETH").
+vs_currencies=usd → tells the API to return the price in USD.
+Free tier → You can make up to 50 requests per minute (CoinGecko’s limit for the public API).
+'''''⚠ But:
+If you start building a real trading app with a lot of requests or need more endpoints 
+(historical data, market charts, etc.), it’s better to:
+Register for a free CoinGecko API key (optional for basic use)
+Or move to a provider with guaranteed uptime and higher limits.''''
+
+
+  '''response = requests.get(url, timeout=5)
+        data = response.json()'''
+->Sends GET with a 5-second timeout, parses JSON.
+->requests.get(url, timeout=5)
+--->This sends an HTTP GET request to the CoinGecko API endpoint.
+    timeout=5 means: if the server doesn’t respond in 5 seconds, stop waiting and raise an error.
+    This returns a Response object from the requests library.
+->response.json()
+---->When the server responds, the data is first received in raw bytes (HTML/JSON text format).
+     response.json() parses the JSON string into a Python dictionary.
+
+
+ '''if symbol.lower() in data:
+            return float(data[symbol.lower()]['usd'])'''
+->If the ID is present in the response, return the USD price.
+
+
+'''except Exception as e:
+        print(f"Crypto price fetch error for {symbol}: {e}")
+    return None'''
+->On error (rate limit, wrong ID), log and return None.
+
+
+
+********
+
+def get_price(symbol: str) -> tuple:
+    """
+    Unified price fetcher. Returns (price, market_type).
+    Automatically detects if it's a stock or crypto.
+    """
+High-level function that tries stock first, then crypto.
+
+Returns a tuple (price, "stock"|"crypto") or (None, None) if both fail.
+
+    # Try as stock first
+    price = get_stock_price(symbol)
+    if price is not None:
+        return price, "stock"
+Attempts Yahoo Finance. If it works, short-circuits and returns.
+
+
+    # Try as crypto (first using symbol as-is, then try mapping common tickers to ids)
+    crypto_price = get_crypto_price(symbol)
+    if crypto_price is not None:
+        return crypto_price, "crypto"
+Treats the given symbol as a CoinGecko ID (e.g., if caller already passed "bitcoin").
+If found, returns immediately.
+
+
+    # Fallback: try common crypto ticker mappings
+    crypto_map = {
+        "BTC": "bitcoin",
+        "ETH": "ethereum",
+        "DOGE": "dogecoin",
+        "ADA": "cardano"
+    }
+A small mapping from common tickers → CoinGecko IDs.
+
+
+    if symbol.upper() in crypto_map:
+        crypto_price = get_crypto_price(crypto_map[symbol.upper()])
+        if crypto_price is not None:
+            return crypto_price, "crypto"
+If the user passed a ticker like "BTC", translate to "bitcoin" and try again.
+
+
+    return None, None
+If nothing worked, return a pair of Nones.
