@@ -27,6 +27,8 @@ def create_app():
     app.register_blueprint(main)
     from routes.auth_route import auth_route
     app.register_blueprint(auth_route)
+    from routes.trade_route import trade_route
+    app.register_blueprint(trade_route)
 
     return app
 

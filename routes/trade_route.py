@@ -12,7 +12,7 @@ trade_route=Blueprint('trade_route','__name__')
 def trade():
     form=Trade()
     if form.validate_on_submit():
-        symbol=form.symbol.upper.data
+        symbol=form.symbol.data
         quantity=float(form.quantity.data)
         trade_type=form.trade_type.data
 

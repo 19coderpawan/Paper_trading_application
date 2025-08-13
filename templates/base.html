@@ -23,6 +23,7 @@
       {% if current_user.is_authenticated %}
       <a href="{{url_for('home_route.dashboard')}}">dashboard</a>
       <a href="{{url_for('auth_route.logout')}}">Logout</a>
+      <a href="{{url_for('trade_route.trade')}}">Trade</a>
       {% else %}
       <a href="{{url_for('auth_route.login')}}">Login</a>
       <a href="{{url_for('auth_route.register')}}">Register</a>
@@ -33,7 +34,7 @@
       </label>
     </nav>
     <p>
-      Logged in as: {{ current_user.email if current_user.is_authenticated else
+      Logged in as: {{ current_user.name if current_user.is_authenticated else
       "Not logged in" }}
     </p>
     <!-- Dark Mode Toggle -->
