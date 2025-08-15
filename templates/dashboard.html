@@ -1,6 +1,14 @@
 {% extends 'base.html' %}
 
 {% block content %}
+<style>
+    .stat-value {
+    display: inline-block;
+    max-width: 100%;
+    overflow-wrap: break-word; /* Allows breaking long numbers */
+    font-size: clamp(1rem, 2vw, 1.5rem); /* Auto-adjust font size */
+}
+</style>
 <!-- Trading Ticker -->
 <div class="trading-ticker">
     <div class="ticker-wrap">
@@ -23,7 +31,7 @@
         <div class="col-md-4">
             <div class="stat-card balance-card">
                 <h5>Balance</h5>
-                <p class="stat-value">${{ current_user.balance }}</p>
+                <p class="stat-value">${{ current_user.balance | round(2) }}</p>
             </div>
         </div>
         <div class="col-md-4">
@@ -54,14 +62,14 @@
                 </tr>
             </thead>
             <tbody>
-                {% for t in transactions %}
+                {% for t in transaction %}
                 <tr>
-                    <td>{{ t.date }}</td>
-                    <td>{{ t.asset }}</td>
+                    <td>{{ t.timestamp }}</td>
+                    <td>{{ t.symbol }}</td>
                     <td>{{ t.quantity }}</td>
                     <td>${{ t.price }}</td>
-                    <td class="{% if t.type == 'BUY' %}buy-type{% else %}sell-type{% endif %}">
-                        {{ t.type }}
+                    <td class="{% if t.transaction_type == 'BUY' %}buy-type{% else %}sell-type{% endif %}">
+                        {{ t.transaction_type }}
                     </td>
                 </tr>
                 {% endfor %}
