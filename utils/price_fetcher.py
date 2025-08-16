@@ -1,42 +1,44 @@
 import yfinance as yf
 import requests
+import threading
+
+# Global cache for name-to-ticker mapping
+NAME_TO_TICKER = {}
+MAPPINGS_READY = False
 
 # instead of manually maintaing the mapping we can always fetch it ,we can totally make \
 # this dynamic so you don’t have to maintain NAME_TO_TICKER manually.
 
-def fetch_ticker_mapping():
-    mapping={}
-    #For stocks: Use the free NASDAQ Symbol Directory  API to map company name → ticker.
+def fetch_symbol_mappings():
+    """Fetch mappings from NASDAQ + CoinGecko in background."""
+    global NAME_TO_TICKER, MAPPINGS_READY
     try:
-        nasdaq_url="https://api.nasdaq.com/api/screener/stocks?tableonly=true&limit=5000"
-        headers = {"User-Agent": "Mozilla/5.0"} # NASDAQ requires a User-Agent
-        response=requests.get(nasdaq_url,headers)
-        data=response.json()["data"]["rows"]
-        for stock in data:
-            symbol=stock["symbol"].strip().upper()
-            name=stock["name"].strip().upper()
-            mapping[name]=symbol
-            mapping[symbol]=symbol  # also map ticker to itself
+        local_map = {}
+
+        # --- Fetch stock list from NASDAQ ---
+        nasdaq_url = "https://api.nasdaq.com/api/screener/stocks?tableonly=true&limit=5000"
+        headers = {"User-Agent": "Mozilla/5.0"}
+        stocks = requests.get(nasdaq_url, headers=headers, timeout=15).json()
+        for row in stocks.get("data", {}).get("rows", []):
+            local_map[row["name"].upper()] = row["symbol"]
+
+        # --- Fetch crypto list from CoinGecko ---
+        cryptos = requests.get("https://api.coingecko.com/api/v3/coins/list", timeout=15).json()
+        for c in cryptos:
+            local_map[c["name"].upper()] = c["symbol"].upper()
+            local_map[c["symbol"].upper()] = c["symbol"].upper()
+
+        NAME_TO_TICKER = local_map
+        MAPPINGS_READY = True
+        print(f"[INFO] Background: Loaded {len(NAME_TO_TICKER)} mappings ✅")
 
     except Exception as e:
-        print(f"error fetching the data from nasdaq-: {e}")
+        print(f"[ERROR] Background mapping fetch failed: {e}")
 
-    # For crypto: Use CoinGecko’s /coins/list API to map crypto name → symbol.    
-    try:
-        coin_url="https://api.coingecko.com/api/v3/coins/list"
-        response=requests.get(coin_url)
-        data=response.json()
-        for crypto in data:
-            symbol=crypto["symbol"].strip().upper()
-            name=crypto["name"].strip().upper()
-            mapping[name]=symbol
-            mapping[symbol]=symbol
-    except Exception as e:
-        print(f"error fetching the data from coingecko-: {e}")    
 
-    return mapping
+# --- Start background fetch at import ---
+threading.Thread(target=fetch_symbol_mappings, daemon=True).start()
 
-NAME_TO_TICKER=fetch_ticker_mapping()    
             
 #A name-to-ticker mapping for stocks and cryptos.
 # so that user can type company name like apple instead of appl for better expericence.
@@ -58,9 +60,12 @@ NAME_TO_TICKER=fetch_ticker_mapping()
 # }
 
 def normalize_symbol(user_input: str) -> str:
-    """Normalize user input to a valid ticker or crypto ID."""
+    """Normalize user input to ticker if mapping is ready."""
     cleaned = user_input.strip().upper()
-    return NAME_TO_TICKER.get(cleaned, cleaned) #if found symbol then return it else return cleaned.
+    if MAPPINGS_READY:
+        return NAME_TO_TICKER.get(cleaned, cleaned)
+    return cleaned  # fallback until mappings are ready
+
 
 def get_stock_prices(symbol)->float:
     # """Fetch latest stock price using Yahoo Finance."""
@@ -91,7 +96,8 @@ def get_crypto_prices(symbol)->float:
 def get_prices(userInput)->tuple:
     '''Unified price fetcher. Returns (price, market_type).
     Automatically detects if it's a stock or crypto.'''
-
+     
+    
     # normalizing the user input to ticker symbol.
     symbol=normalize_symbol(userInput)
 

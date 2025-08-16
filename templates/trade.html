@@ -10,6 +10,8 @@
     </div>
 
     <p id="price-display" style="font-weight:bold;"></p>
+    <p id="loading-indicator" style="display:none; color:orange;">⏳ Loading mappings…</p>
+    <p id="error-message" style="display:none; color:red;">❌ Price not found.</p>
     <div>
         {{ form.quantity.label }}
         {{ form.quantity(size=20) }}
@@ -25,25 +27,42 @@
 <script>
 document.getElementById("symbol-input").addEventListener("change", function() {
     const symbol = this.value;
-   console.log(symbol)
     const priceDisplay = document.getElementById("price-display");
+    const loadingIndicator = document.getElementById("loading-indicator");
+    const errorMessage = document.getElementById("error-message");
+
+    // Reset UI
+    priceDisplay.textContent = "";
+    errorMessage.style.display = "none";
+    loadingIndicator.style.display = "none";
 
     if (symbol) {
+        // Show loading
+        loadingIndicator.style.display = "block";
+
         fetch(`/get_price/${symbol}`)
             .then(res => res.json())
             .then(data => {
+                // Hide loading
+                loadingIndicator.style.display = "none";
+
+                // if (!data.mappings_ready) {
+                //     loadingIndicator.textContent = "⏳ Still preparing mappings… try again shortly";
+                //     loadingIndicator.style.display = "block";     
+                // }
+                
                 if (data.price) {
-                    priceDisplay.textContent = `Live Price: $${data.price} (${data.market_type})`;
+                    priceDisplay.textContent = `💰 Live Price: $${data.price} (${data.market_type})`;
                 } else {
-                    priceDisplay.textContent = data.error || "Price not found.";
-                }
+                    errorMessage.style.display = "block";
+                
+            }
             })
             .catch(err => {
-                priceDisplay.textContent = "Error fetching price.";
+                loadingIndicator.style.display = "none";
+                errorMessage.style.display = "block";
                 console.error(err);
             });
-    } else {
-        priceDisplay.textContent = "";
     }
 });
 </script>

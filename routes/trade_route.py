@@ -4,7 +4,7 @@ from app import db
 from models import Portfolio,Transaction
 from flask_login import login_required,current_user
 from datetime import datetime,timezone
-from utils.price_fetcher import get_prices
+from utils.price_fetcher import get_prices,MAPPINGS_READY
 
 trade_route=Blueprint('trade_route',__name__)
 
@@ -84,7 +84,7 @@ def getprice(symbol):
     # jsonify converts Python dictionaries/lists into JSON responses for the client.
     price,market_type=get_prices(symbol)
     if price:
-        return jsonify({"price": price, "market_type": market_type})
+        return jsonify({"price": price, "market_type": market_type,"mappings_ready": MAPPINGS_READY})
     return jsonify({"error": f"Price not found for {symbol}"}), 404
 
 
