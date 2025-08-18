@@ -78,7 +78,7 @@
 
 .transaction-table {
     border-radius: 0.75rem;
-    overflow: hidden;
+    /* overflow: hidden; */
     box-shadow: 0 4px 15px rgba(0,0,0,0.15);
 }
 .transaction-table th {
@@ -97,6 +97,20 @@
     color: #e53e3e;
     font-weight: bold;
 }
+
+div[style*="overflow-y: auto;"]::-webkit-scrollbar {
+    width: 8px;
+}
+
+div[style*="overflow-y: auto;"]::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+div[style*="overflow-y: auto;"]::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
 </style>
 
 <!-- Trading Ticker -->
@@ -141,6 +155,7 @@
     <!-- Transactions -->
     <h4 class="mt-5 section-title">📜 Recent Transactions</h4>
     <div class="table-responsive">
+        <div style="max-height: 300px; overflow-y: auto;">
         <table class="table table-hover table-striped transaction-table">
             <thead class="table-dark">
                 <tr>
@@ -165,6 +180,7 @@
                 {% endfor %}
             </tbody>
         </table>
+        </div>
     </div>
 </div>
 {% endblock %}
