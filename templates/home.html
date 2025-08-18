@@ -3,29 +3,45 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<div class="container">
-    <div class="ticker">
-    <div class="ticker-wrap">
-        <div class="ticker-move">
-            <span>📈 AAPL: +1.25%</span>
-            <span>💹 BTC: +0.88%</span>
-            <span>📉 TSLA: -2.10%</span>
-            <span>📊 ETH: +3.45%</span>
-            <span>🪙 DOGE: -0.50%</span>
-        </div>
+
+
+
+<!-- Live Ticker -->
+<div class="ticker bg-dark text-white py-2">
+  <div class="ticker-wrap">
+    <div class="ticker-move d-flex gap-5">
+      <span>📈 AAPL: +1.25%</span>
+      <span>💹 BTC: +0.88%</span>
+      <span>📉 TSLA: -2.10%</span>
+      <span>📊 ETH: +3.45%</span>
+      <span>🪙 DOGE: -0.50%</span>
     </div>
+  </div>
 </div>
-    <h1>Welcome to the Paper Trading App!</h1>
-    <p>Start learning and simulating your trades risk-free.</p>
 
-    <dotlottie-wc
-  src="https://lottie.host/c8d78c47-bca3-4297-af94-ffe50201f17b/eeW9Nx9xlh.lottie"
-  style="width: 500px;height: 500px; align-items: center;"
-  
-  speed="1"
-  autoplay
-  loop
-></dotlottie-wc>
+<!-- Hero Section -->
+<div class="container text-center my-5">
+  <h1 class="fw-bold display-5">Welcome to <span class="text-primary">Paper Trading App</span> 🚀</h1>
+  <p class="lead text-muted">Learn trading risk-free by simulating real market conditions.</p>
 
-    </div>
+  <!-- Animation -->
+  <dotlottie-wc
+    src="https://lottie.host/c8d78c47-bca3-4297-af94-ffe50201f17b/eeW9Nx9xlh.lottie"
+    style="width: 400px;height: 400px; margin: 20px auto; display: block;"
+    speed="1"
+    autoplay
+    loop
+  ></dotlottie-wc>
+
+  <!-- CTA Button -->
+  <a href="/trade" class="btn btn-primary btn-lg mt-3 shadow">Start Trading</a>
+</div>
+
+<!-- Footer -->
+<footer class="bg-white text-white py-3 mt-5 ">
+  <div class="container text-center mw-100 mh-100">
+    <p class="mb-1">&copy; 2025 PaperTrade. All rights reserved.</p>
+    <small class="text-info">Made with ❤️ for learning and simulation purposes only.</small>
+  </div>
+</footer>
 {% endblock %}
