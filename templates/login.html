@@ -9,6 +9,9 @@
             {{form.email.label}} --- {{form.email()}}
             {{form.password.label}} --- {{form.password()}}
             {{form.submit()}}
+            <a href="{{ url_for('auth_route.googlelogin') }}" class="btn btn-danger">
+  <i class="fab fa-google"></i> Login with Google
+</a>
         </form>
             <dotlottie-wc
   src="https://lottie.host/c80376d7-1474-4087-8e90-f756c973e366/rzFEkqaNXh.lottie"

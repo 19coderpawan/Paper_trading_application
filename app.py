@@ -3,6 +3,10 @@ from instance.config import Config
 from extension import db
 from flask_login import LoginManager
 from flask_migrate import Migrate
+import os
+from dotenv import load_dotenv
+os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
+load_dotenv() # take environment variables from .env
 login_manager=LoginManager()
 migrate=Migrate()
 def create_app():
@@ -25,10 +29,13 @@ def create_app():
     
     from routes.home_route import main
     app.register_blueprint(main)
-    from routes.auth_route import auth_route
-    app.register_blueprint(auth_route)
+    from routes.auth_route import auth_route,google_bp
+    # app.register_blueprint(auth_route)
+    app.register_blueprint(auth_route, url_prefix="/auth")
+    app.register_blueprint(google_bp, url_prefix="/login")  # for Google OAuth
     from routes.trade_route import trade_route
     app.register_blueprint(trade_route)
+    
 
     return app
 

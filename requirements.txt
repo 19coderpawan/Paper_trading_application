@@ -8,3 +8,5 @@ email-validator
 flask-migrate
 yfinance 
 requests
+ flask-dance[sqlalchemy] 
+ oauthlib

@@ -4,7 +4,20 @@ from app import db
 from models import User
 from flask_login import login_user,logout_user,login_required
 from werkzeug.security import generate_password_hash,check_password_hash
+from flask_dance.contrib.google import make_google_blueprint, google
+import os
 auth_route=Blueprint('auth_route',__name__)
+
+
+# Google OAuth blueprint
+google_bp = make_google_blueprint(
+    client_id=os.getenv("Client_id"),
+    client_secret=os.getenv("Client_sceret"),
+    scope=["openid", "https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"],
+    redirect_to="auth_route.googlelogin",  # function name below
+    # scope=["profile", "email"],
+)
+
 
 @auth_route.route('/register',methods=['GET','POST'])
 def register():
@@ -45,5 +58,33 @@ def logout():
     logout_user()
     flash("LogOut successfully",'success')
     return redirect(url_for('auth_route.login'))
+
+@auth_route.route('/login/google')
+def googlelogin():
+    if not google.authorized:
+        return redirect(url_for("google.login"))
+    resp = google.get("/oauth2/v2/userinfo")
+    if not resp.ok:
+        flash("Failed to fetch user info from Google.", "danger")
+        return redirect(url_for("auth_route.login"))
+    user_info = resp.json()
+    email = user_info["email"]
+
+    # Check if user exists in DB
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        # Create new user
+        user = User(
+            name=user_info.get("name", email.split("@")[0]),
+            email=email,
+            # set a dummy password since Google users won't need it
+            hash_password="google-oauth",
+            
+        )
+        db.session.add(user)
+        db.session.commit()
+        login_user(user)
+    flash(f"Welcome {user.name}! You are logged in with Google.", "success")
+    return redirect(url_for("home_route.dashboard"))
 
 
