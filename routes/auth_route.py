@@ -1,8 +1,8 @@
-from flask import Blueprint,render_template,redirect,url_for,flash,request
+from flask import Blueprint,render_template,redirect,url_for,flash,request,session
 from forms import Login,Registration
 from app import db
 from models import User
-from flask_login import login_user,logout_user,login_required
+from flask_login import login_user,logout_user,login_required,current_user
 from werkzeug.security import generate_password_hash,check_password_hash
 from flask_dance.contrib.google import make_google_blueprint, google
 import os
@@ -19,10 +19,8 @@ google_bp = make_google_blueprint(
         "https://www.googleapis.com/auth/userinfo.profile"
     ],
     redirect_to="auth_route.googlelogin",
-    authorization_url_params={   # 👈 correct for v7.1.0
-        "access_type": "offline",
-        "prompt": "consent"
-    }
+    offline=True,       # request refresh_token
+    reprompt_consent=True
 )
 
 
@@ -49,6 +47,8 @@ def register():
 @auth_route.route('/login',methods=['GET','POST'])
 def login():
     form=Login()
+    if current_user.is_authenticated:
+        return redirect(url_for("home_route.dashboard"))  # 👈 don’t send them back to login
     if form.validate_on_submit():
         user=User.query.filter_by(email=form.email.data).first()
         if user and check_password_hash(user.hash_password,form.password.data):
@@ -63,11 +63,21 @@ def login():
 @login_required
 def logout():
     logout_user()
+    # Clear Flask session
+    session.clear()
+
+    # Clear OAuth token from storage (if using Flask-Dance default)
+    if "google_oauth_token" in session:
+        del session["google_oauth_token"]
+
     flash("LogOut successfully",'success')
     return redirect(url_for('auth_route.login'))
 
 @auth_route.route('/login/google')
 def googlelogin():
+    if current_user.is_authenticated:
+        print("yes")
+        return redirect(url_for("home_route.dashboard"))  # 👈 don’t send them back to login
     if not google.authorized:
         return redirect(url_for("google.login"))
     resp = google.get("/oauth2/v2/userinfo")
@@ -85,12 +95,12 @@ def googlelogin():
             name=user_info.get("name", email.split("@")[0]),
             email=email,
             # set a dummy password since Google users won't need it
-            hash_password="google-oauth",
+            hash_password=generate_password_hash("google_auth"),
             
         )
         db.session.add(user)
         db.session.commit()
-        login_user(user)
+    login_user(user)
     flash(f"Welcome {user.name}! You are logged in with Google.", "success")
     return redirect(url_for("home_route.dashboard"))
 
