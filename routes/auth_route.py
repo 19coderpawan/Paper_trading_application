@@ -13,9 +13,16 @@ auth_route=Blueprint('auth_route',__name__)
 google_bp = make_google_blueprint(
     client_id=os.getenv("Client_id"),
     client_secret=os.getenv("Client_sceret"),
-    scope=["openid", "https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile"],
-    redirect_to="auth_route.googlelogin",  # function name below
-    # scope=["profile", "email"],
+    scope=[
+        "openid",
+        "https://www.googleapis.com/auth/userinfo.email",
+        "https://www.googleapis.com/auth/userinfo.profile"
+    ],
+    redirect_to="auth_route.googlelogin",
+    authorization_url_params={   # 👈 correct for v7.1.0
+        "access_type": "offline",
+        "prompt": "consent"
+    }
 )
 
 
