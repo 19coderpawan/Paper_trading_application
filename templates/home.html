@@ -4,8 +4,6 @@
 
 {% block content %}
 
-
-
 <!-- Live Ticker -->
 <div class="ticker bg-dark text-white py-2">
   <div class="ticker-wrap">
@@ -19,29 +17,64 @@
   </div>
 </div>
 
-<!-- Hero Section -->
-<div class="container text-center my-5">
-  <h1 class="fw-bold display-5">Welcome to <span class="text-primary">Paper Trading App</span> 🚀</h1>
-  <p class="lead text-muted">Learn trading risk-free by simulating real market conditions.</p>
-
+<!-- Full Screen Hero Section -->
+<div class="hero-section d-flex flex-column justify-content-center align-items-center text-center">
+  <h1 class="display-2 fw-bold text-white mb-4" style="letter-spacing:1px;">
+    Welcome to <span class="text-info">Paper Trading App</span> 🚀
+  </h1>
+  <p class="lead text-info mb-4" style="font-weight: 500;">
+    Learn trading risk-free by simulating real market conditions!
+  </p>
   <!-- Animation -->
   <dotlottie-wc
     src="https://lottie.host/c8d78c47-bca3-4297-af94-ffe50201f17b/eeW9Nx9xlh.lottie"
-    style="width: 400px;height: 400px; margin: 20px auto; display: block;"
-    speed="1"
+    style="width: 300px; height: 300px; margin: 0 auto; display: block;"
+    speed="1.2"
     autoplay
     loop
   ></dotlottie-wc>
-
-  <!-- CTA Button -->
-  <a href="/trade" class="btn btn-primary btn-lg mt-3 shadow">Start Trading</a>
+  <!-- Centered CTA Button -->
+  <a href="/trade"
+     class="btn btn-lg mt-5 shadow-lg px-5 start-btn"
+     style="background: linear-gradient(90deg,#0d6efd 70%, #12f0fa 100%);
+            color: #fff; border: none; text-shadow: 0 0 8px #12f0fa;
+            box-shadow: 0 0 16px #12f0fa66;">
+    ✨ Start Trading
+  </a>
 </div>
 
 <!-- Footer -->
-<footer class="bg-white text-white py-3 mt-5 ">
+<footer class="bg-black text-white py-3 mt-5 ">
   <div class="container text-center mw-100 mh-100">
     <p class="mb-1">&copy; 2025 PaperTrade. All rights reserved.</p>
     <small class="text-info">Made with ❤️ for learning and simulation purposes only.</small>
   </div>
 </footer>
+
+<!-- Fullscreen Hero & Footer Styles -->
+<style>
+.hero-section {
+  min-height: 100vh;
+  width: 100vw;
+  background: linear-gradient(135deg, #181c35 40%, #41e6ee 100%);
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+.start-btn {
+  font-size: 1.35rem;
+  border-radius: 100px;
+  padding: 18px 40px;
+  transition: transform 0.2s;
+}
+.start-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 32px #12f0fa59;
+}
+
+
+
+
+</style>
+
 {% endblock %}

@@ -99,15 +99,15 @@ def get_prices(userInput)->tuple:
      
     
     # normalizing the user input to ticker symbol.
-    symbol=normalize_symbol(userInput)
+    # symbol=normalize_symbol(userInput)
 
     # Try as stock first
-    price=get_stock_prices(symbol)
+    price=get_stock_prices(userInput)
     if price is not None:
         return price,"stock"
     
     # Try crypto (first using symbol as-is, then try mapping common tickers to ids)
-    crypto_price=get_crypto_prices(symbol)
+    crypto_price=get_crypto_prices(userInput)
     if crypto_price is not None:
         return crypto_price,"crypto"
     

@@ -1,7 +1,8 @@
-from flask import Blueprint, render_template,redirect
+from flask import Blueprint, render_template,redirect,jsonify
 from flask_login import login_required,current_user
 from models import Transaction,Portfolio
 from sqlalchemy import func
+from utils.price_fetcher import get_prices
 main=Blueprint('home_route',__name__)
 
 @main.route('/')
@@ -19,4 +20,9 @@ def dashboard():
     net_worth=totalInvested+current_user.balance
 
     return render_template('dashboard.html',transaction=transaction,total_invested=totalInvested,net_worth=net_worth)
+
+
+
+
+
 
